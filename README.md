@@ -68,7 +68,6 @@ $F ::= p|\top|\bot|\lnot F|(F\lor F)|(F\land F)|(F\to F)|(F\leftrightarrow F)|(F
 where $p \in$ **AP**.
 
 Any formula that satisfies this rule is *well-formed*.
-(Note: In the program, `valid` will used to denote if a formula is *well-formed*)
 
 **Prop** is the set of all propositional formulae.
 
@@ -83,7 +82,7 @@ Input:
 
 Output:
 * `string` *formula* representing the string itself
-* `bool` *valid* representing if it is well-formed
+* `bool` *well-formed* representing if it is well-formed
 * `variables` representing propositions the formula contains
 
 ---
@@ -92,5 +91,45 @@ Output:
 Run `make` to produce and run the main executable
 
 Run `make clean` to remove all generated files
+
+---
+
+## Lecture 2
+### Contents:
+
+1. Parse Trees
+2. Assignments and Valuations
+3. Truth Tables
+4. Satisfiability and Validity
+5. Semantic Entailment
+6. The program
+7. How to run
+
+---
+
+### 1. Parse Trees
+
+---
+
+### 2. Assignments and Valuations
+---
+
+### 3. Truth Tables
+
+---
+
+### 4. Satisfiability and Validity
+
+---
+
+### 5. Semantic Entailment
+
+---
+
+### 6. The program
+
+---
+
+### 7. How to run
 
 ---

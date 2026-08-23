@@ -13,10 +13,14 @@ int main(){
         cin>>s;
         prop F(s);
         cout<<"Formula: "<<F.formula<<'\n';
-        cout<<"Validity: "<<F.valid<<'\n';
+        cout<<"well-formed: "<<F.well_formed<<'\n';
         cout<<"Variables:\n";
-        int k = F.variables.size();
-        for(auto j = F.variables.begin(); j != F.variables.end(); j++){
+        if(!F.well_formed){
+            cout<<"Not well-formed\n";
+            continue;
+        }
+        unordered_set<string> variables = F.getVariables();
+        for(auto j = variables.begin(); j != variables.end(); j++){
             cout<<*j<<'\n';
         }
     }

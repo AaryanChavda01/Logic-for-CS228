@@ -25,12 +25,12 @@ class prop{
     // A propositional formula
     public:
     string formula;
-    unordered_set<string> variables;
-    bool valid;
+    bool well_formed;
     prop();
     prop(atom_prop p);
     prop(string s);
     bool validate();
+    unordered_set<string> getVariables();
     // logical connectives
     prop operator~();
     prop operator+(atom_prop q);
