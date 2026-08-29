@@ -231,16 +231,18 @@ truthTable::truthTable(prop F){
 
 void truthTable::print(){
     int n = semantics.size(), m = variables.size();
+    cout<<"| ";
     for(auto i=variables.begin(); i!=variables.end(); i++){
         cout<<*i<<" | ";
     }
-    cout<<formula<<'\n';
+    cout<<formula<<" |\n";
     for(int i=0; i<n; i++){
         int k = i;
+        cout<<"| ";
         for(int j=0; j<m; j++){
             cout<< k%2 << " | ";
             k = k/2;
         }
-        cout<<semantics[i]<<'\n';
+        cout<<semantics[i]<<" |\n";
     }
 }

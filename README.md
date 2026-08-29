@@ -101,31 +101,67 @@ Run `make clean` to remove all generated files
 2. Assignments and Valuations
 3. Truth Tables
 4. Satisfiability and Validity
-5. Semantic Entailment
-6. The program
-7. How to run
+5. The program
+6. How to run
 
 ---
 
 ### 1. Parse Trees
 
+**Definition**: A **parse tree** of a *formula* F $\in$ **Prop** is a tree such that:
+* The root is F,
+* leaves are atomic propositions, and
+* each internal node is formed by applying some logical connective to its children.
+
 ---
 
 ### 2. Assignments and Valuations
+
+**Definition**: An ***assignment*** is a map from **AP** $\to$ {0,1}.
+
+**Definition**: A ***Valuation*** or a *model* *m* of a propositional formula *F* $\in$ **Prop** is an assignment of each atomic proposition in *F* to a truth value
+
+**Definition**: The ***semantics*** of *F* $\in$ **Prop**, denoted [|F|], is a map from {0,1}$^{AP}$ $\to$ {0,1}.
+
 ---
 
 ### 3. Truth Tables
+
+Representation of the semantics of a formula in tabular form.
 
 ---
 
 ### 4. Satisfiability and Validity
 
+**Definition**: F $\in$ **Prop** is said to be **satisfiable** if there exists a valuation *m* of F such that *m*(F) = 1, i.e., [|F|] = 1.
+
+**Definition**: F $\in$ **Prop** is said to be **valid** if for all valuations *m* of F, *m*(F) = 1, i.e., [|F|] = 1.
+
+Valid formulas are called **tautologies**.
+
+Note: $F \in$ **Prop** is satisfiable iff $\lnot F$ is not valid.
+
 ---
 
-### 6. The program
+### 5. The program
+
+The program calculates and prints the truth table for any well formed propositional formula given and outputs whether it is satisfiable and valid.
+
+Input:
+* `n`: 1 integer representing number of testcases
+* `n` `string`s representing some propositional formula
+
+Output:
+* The Truth Table of F.
+* "Satisfiable: " with "YES" or "NO" determining whether given formula is satisfiable.
+* "Valid: " with "YES" or "NO" determining whether given formula is valid.
 
 ---
 
-### 7. How to run
+### 6. How to run
+
+Run `make` to produce and run the main executable
+
+Run `make clean` to remove all generated files
 
 ---
