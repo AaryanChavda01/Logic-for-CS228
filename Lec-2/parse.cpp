@@ -203,6 +203,8 @@ truthTable::truthTable(prop F){
     formula = F.formula;
     semantics = vector<bool>(N);
     variables = vector<string>(n);
+    satisfiable = false;
+    valid = true;
     vector<atom_prop> assignment(n);
     int k = 0;
     for(auto i=vars.begin(); i!= vars.end(); i++){
@@ -216,7 +218,14 @@ truthTable::truthTable(prop F){
             assignment[j].value = k%2;
             k = k/2;
         }
-        semantics[i] = F_T.valuate(assignment);
+        int valuation = F_T.valuate(assignment);
+        semantics[i] = valuation;
+        if(!satisfiable && valuation == 1){
+            satisfiable = true;
+        }
+        if(valid && valuation == 0){
+            valid = false;
+        }
     }
 }
 

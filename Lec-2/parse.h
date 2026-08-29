@@ -32,6 +32,8 @@ class truthTable {
     string formula;
     vector<string> variables;
     vector<bool> semantics;
+    bool satisfiable;
+    bool valid;
     truthTable(prop F);
     void print();
 };

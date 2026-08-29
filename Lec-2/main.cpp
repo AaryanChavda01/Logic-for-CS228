@@ -17,6 +17,10 @@ int main(){
         else{
             truthTable F_table(F);
             F_table.print();
+            cout<<"Satisfiable: ";
+            F_table.satisfiable ? cout<<"YES\n" : cout<<"NO\n";
+            cout<<"Valid: ";
+            F_table.valid ? cout<<"YES\n" : cout<<"NO\n";
         }
     }
     return 0;
