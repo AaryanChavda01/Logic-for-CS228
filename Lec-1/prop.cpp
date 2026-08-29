@@ -2,16 +2,28 @@
 
 // atomic proposition functions
 atom_prop::atom_prop(){
-    name = "TOP";
-    value = true;
+    name = "EMPTY";
+    value = false;
 }
 atom_prop::atom_prop(string s){
-    s == "" ? name = "TOP" : name = s;
-    value = true;
+    if(s == ""){
+        name = "EMPTY";
+        value = false;
+    }
+    else{
+        name = s;
+        value = true;
+    }
 }
 atom_prop::atom_prop(string s, bool v){
-    s == "" ? name = "EMPTY" : name = s;
-    value = v;
+    if(s == ""){
+        name = "EMPTY";
+        value = false;
+    }
+    else{
+        name = s;
+        value = v;
+    }
 }
 
 // logical connectives for atomic propositions
@@ -65,21 +77,21 @@ prop::prop(string s){
     formula = s;
     well_formed = validate();
 }
-unordered_set<string> prop::getVariables(){
+unordered_set<string> prop::getVariables(string& s){
     // reuse validate's recursion
-    // Adds propositions to set "variables"
+    // Adds propositions in s to set "variables"
+    int f_sz = s.size();
     unordered_set<string> variables;
-    int f_sz = formula.size();
     if(f_sz == 0){
         // "" not allowed
         return variables;
     }
-    if(formula[0] == '('){
-        if(formula[f_sz-1] == ')'){
+    if(s[0] == '('){
+        if(s[f_sz-1] == ')'){
             // logic part (connective)
             int brackets = 0;
             for(int i=1; i<f_sz-1; i++){
-                char c = formula[i];
+                char c = s[i];
                 if(c == '('){
                     brackets++;
                 }
@@ -90,9 +102,9 @@ unordered_set<string> prop::getVariables(){
                     if(c == '~'){
                         if(i == 1){
                             // check inner prop
-                            prop p(formula.substr(2, f_sz-3));
-                            if(p.well_formed){
-                                unordered_set<string> new_var = p.getVariables();
+                            string p = s.substr(2, f_sz-3);
+                            if(validate(p)){
+                                unordered_set<string> new_var = getVariables(p);
                                 variables.insert(new_var.begin(),new_var.end());
                             }
                             return variables;
@@ -103,39 +115,39 @@ unordered_set<string> prop::getVariables(){
                     }
                     else if(c == '^' || c == '+' || c == '*'){
                         // check inner props
-                        prop p(formula.substr(1, i-1));
-                        prop q(formula.substr(i+1, f_sz-i-2));
-                        if(p.well_formed && q.well_formed){
-                            unordered_set<string> new_var = p.getVariables();
+                        string p = s.substr(1, i-1);
+                        string q = s.substr(i+1, f_sz-i-2);
+                        if(validate(p) && validate(q)){
+                            unordered_set<string> new_var = getVariables(p);
                             variables.insert(new_var.begin(),new_var.end());
-                            new_var = q.getVariables();
+                            new_var = getVariables(q);
                             variables.insert(new_var.begin(),new_var.end());
                         }
                         return variables;
                     }
-                    else if(c == '-' && i < f_sz-2 && formula[i+1] == '>'){
+                    else if(c == '-' && i < f_sz-2 && s[i+1] == '>'){
                         // check inner props
-                        prop p(formula.substr(1, i-1));
-                        prop q(formula.substr(i+2, f_sz-i-3));
-                        if(p.well_formed && q.well_formed){
-                            unordered_set<string> new_var = p.getVariables();
+                        string p = s.substr(1, i-1);
+                        string q = s.substr(i+2, f_sz-i-3);
+                        if(validate(p) && validate(q)){
+                            unordered_set<string> new_var = getVariables(p);
                             variables.insert(new_var.begin(),new_var.end());
-                            new_var = q.getVariables();
+                            new_var = getVariables(q);
                             variables.insert(new_var.begin(),new_var.end());
                         }
                         return variables;
                     }
                     else if(
                         c == '<' && i < f_sz-3 &&
-                        formula[i+1] == '-' && formula[i+2] == '>'
+                        s[i+1] == '-' && s[i+2] == '>'
                     ){
                         // check inner props
-                        prop p(formula.substr(1, i-1));
-                        prop q(formula.substr(i+3, f_sz-i-4));
-                        if(p.well_formed && q.well_formed){
-                            unordered_set<string> new_var = p.getVariables();
+                        string p = s.substr(1, i-1);
+                        string q = s.substr(i+3, f_sz-i-4);
+                        if(validate(p) && validate(q)){
+                            unordered_set<string> new_var = getVariables(p);
                             variables.insert(new_var.begin(),new_var.end());
-                            new_var = q.getVariables();
+                            new_var = getVariables(q);
                             variables.insert(new_var.begin(),new_var.end());
                         }
                         return variables;
@@ -156,34 +168,38 @@ unordered_set<string> prop::getVariables(){
     else{
         // check no connectives
         for(int i=0; i<f_sz; i++){
-            char c = formula[i];
+            char c = s[i];
             if(
                 c == ')' || c == '(' || c == '~' ||
                 c == '+' || c == '*' || c == '^' ||
-                (c == '-' && i < f_sz - 1 && formula[i+1] == '>') ||
-                (c == '<' && i < f_sz - 2 && formula[i+1] == '-' && formula[i+2] == '>')
+                (c == '-' && i < f_sz - 1 && s[i+1] == '>') ||
+                (c == '<' && i < f_sz - 2 && s[i+1] == '-' && s[i+2] == '>')
             ){
                 return variables;
             }
         }
-        variables.insert(formula);
+        variables.insert(s);
         return variables;
     }
     return variables;
 }
-bool prop::validate(){
-    // Determines well_formed iff formula belongs to Prop
-    int f_sz = formula.size();
+unordered_set<string> prop::getVariables(){
+    // call helper function on formula
+    return getVariables(formula);
+}
+bool prop::validate(string& s){
+// Determines well_formed iff string belongs to Prop
+    int f_sz = s.size();
     if(f_sz == 0){
         // "" not allowed
         return false;
     }
-    if(formula[0] == '('){
-        if(formula[f_sz-1] == ')'){
+    if(s[0] == '('){
+        if(s[f_sz-1] == ')'){
             // logic part (connective)
             int brackets = 0;
             for(int i=1; i<f_sz-1; i++){
-                char c = formula[i];
+                char c = s[i];
                 if(c == '('){
                     brackets++;
                 }
@@ -194,8 +210,8 @@ bool prop::validate(){
                     if(c == '~'){
                         if(i == 1){
                             // check inner prop
-                            prop p(formula.substr(2, f_sz-3));
-                            return p.well_formed;
+                            string p = s.substr(2, f_sz-3);
+                            return validate(p);
                         }
                         else{
                             return false;
@@ -203,24 +219,24 @@ bool prop::validate(){
                     }
                     else if(c == '^' || c == '+' || c == '*'){
                         // check inner props
-                        prop p(formula.substr(1, i-1));
-                        prop q(formula.substr(i+1, f_sz-i-2));
-                        return p.well_formed && q.well_formed;
+                        string p = s.substr(1, i-1);
+                        string q = s.substr(i+1, f_sz-i-2);
+                        return validate(p) && validate(q);
                     }
-                    else if(c == '-' && i < f_sz-2 && formula[i+1] == '>'){
+                    else if(c == '-' && i < f_sz-2 && s[i+1] == '>'){
                         // check inner props
-                        prop p(formula.substr(1, i-1));
-                        prop q(formula.substr(i+2, f_sz-i-3));
-                        return p.well_formed && q.well_formed;
+                        string p = s.substr(1, i-1);
+                        string q = s.substr(i+2, f_sz-i-3);
+                        return validate(p) && validate(q);
                     }
                     else if(
                         c == '<' && i < f_sz-3 &&
-                        formula[i+1] == '-' && formula[i+2] == '>'
+                        s[i+1] == '-' && s[i+2] == '>'
                     ){
                         // check inner props
-                        prop p(formula.substr(1, i-1));
-                        prop q(formula.substr(i+3, f_sz-i-4));
-                        return p.well_formed && q.well_formed;
+                        string p = s.substr(1, i-1);
+                        string q = s.substr(i+3, f_sz-i-4);
+                        return validate(p) && validate(q);
                     }
                 }
                 else if(brackets < 0){
@@ -238,12 +254,12 @@ bool prop::validate(){
     else{
         // check no connectives
         for(int i=0; i<f_sz; i++){
-            char c = formula[i];
+            char c = s[i];
             if(
                 c == ')' || c == '(' || c == '~' ||
                 c == '+' || c == '*' || c == '^' ||
-                (c == '-' && i < f_sz - 1 && formula[i+1] == '>') ||
-                (c == '<' && i < f_sz - 2 && formula[i+1] == '-' && formula[i+2] == '>')
+                (c == '-' && i < f_sz - 1 && s[i+1] == '>') ||
+                (c == '<' && i < f_sz - 2 && s[i+1] == '-' && s[i+2] == '>')
             ){
                 return false;
             }
@@ -251,6 +267,10 @@ bool prop::validate(){
         return true;
     }
     return false;
+}
+bool prop::validate(){
+    // return validate helper function called on formula
+    return validate(formula);
 }
 
 // logical connectives for propositional formulae

@@ -23,6 +23,8 @@ class atom_prop{
 
 class prop{
     // A propositional formula
+    unordered_set<string> getVariables(string& s);
+    bool validate(string& s);
     public:
     string formula;
     bool well_formed;
