@@ -157,19 +157,19 @@ int parseTree::valuateNode(unordered_map<string, bool>& assignment, treeNode* st
         return -1;
     }
     bool left_bool = left_val, right_bool = right_val;
-    if(root->s == "+"){
+    if(start->s == "+"){
         return left_bool || right_bool;
     }
-    else if(root->s == "*"){
+    else if(start->s == "*"){
         return left_bool && right_bool;
     }
-    else if(root->s == "^"){
+    else if(start->s == "^"){
         return left_bool ^ right_bool;
     }
-    else if(root->s == "->"){
+    else if(start->s == "->"){
         return (!left_bool)||right_bool;
     }
-    else if(root->s == "<->"){
+    else if(start->s == "<->"){
         return left_bool == right_bool;
     }
     return -1;
@@ -193,18 +193,21 @@ int parseTree::valuate(vector<atom_prop>& assignment){
 
 truthTable::truthTable(prop F){
     // use parseTree valuate for every assignment
-    unordered_set<string> variables = F.getVariables();
+    unordered_set<string> vars = F.getVariables();
     parseTree F_T(F);
-    int n = variables.size();
+    int n = vars.size();
     int N = 1;
     for(int i=0; i<n; i++){
         N *= 2;
     }
+    formula = F.formula;
     semantics = vector<bool>(N);
+    variables = vector<string>(n);
     vector<atom_prop> assignment(n);
     int k = 0;
-    for(auto i=variables.begin(); i!= variables.end(); i++){
-        assignment.push_back(atom_prop(*i, 0));
+    for(auto i=vars.begin(); i!= vars.end(); i++){
+        assignment[k] = atom_prop(*i, 0);
+        variables[k] = *i;
         k++;
     }
     for(int i=0; i<N; i++){
@@ -215,18 +218,20 @@ truthTable::truthTable(prop F){
         }
         semantics[i] = F_T.valuate(assignment);
     }
-    num_var = n;
-    sem_size = N;
 }
 
 void truthTable::print(){
-    for(int i=0; i<sem_size; i++){
+    int n = semantics.size(), m = variables.size();
+    for(auto i=variables.begin(); i!=variables.end(); i++){
+        cout<<*i<<" | ";
+    }
+    cout<<formula<<'\n';
+    for(int i=0; i<n; i++){
         int k = i;
-        for(int j=0; j<num_var; j++){
-            cout<< k%2 << ' ';
+        for(int j=0; j<m; j++){
+            cout<< k%2 << " | ";
             k = k/2;
         }
         cout<<semantics[i]<<'\n';
     }
-    return;
 }

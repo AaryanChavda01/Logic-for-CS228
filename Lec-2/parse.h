@@ -28,9 +28,9 @@ class parseTree{
 };
 
 class truthTable {
-    int num_var;
-    int sem_size;
     public:
+    string formula;
+    vector<string> variables;
     vector<bool> semantics;
     truthTable(prop F);
     void print();

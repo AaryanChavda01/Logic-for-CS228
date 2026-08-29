@@ -122,10 +122,6 @@ Run `make clean` to remove all generated files
 
 ---
 
-### 5. Semantic Entailment
-
----
-
 ### 6. The program
 
 ---
